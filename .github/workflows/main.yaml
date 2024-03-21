@@ -5,20 +5,24 @@ on:
 #      - main
 
 jobs:
-  deploy:
-    name: Deploy
+  deploy-prd-skip-verification:
+    name: Deploy prd skip verification
+    if: ${{ endsWith(github.event.head_commit.message, 'skip verification')}}
     runs-on: ubuntu-latest
-    environment: test
-    concurrency: test-${{ github.ref }}
+    environment: prd-skip-verification
+    concurrency: prd-${{ github.ref }}
     steps:
-      - name: Debug commit message
-        run: |-
-          echo ${{ github.event.head_commit.message }}
-      - name: Debug GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Deploy
         run: |-
-          echo Deploy
+          echo Deploy prd
+  deploy-prd:
+    name: Deploy prd
+    if: ${{ !endsWith(github.event.head_commit.message, 'skip verification')}}
+    runs-on: ubuntu-latest
+    environment: prd
+    concurrency: prd-${{ github.ref }}
+    steps:
+      - name: Deploy
+        run: |-
+          echo Deploy prd
           
