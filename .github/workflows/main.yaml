@@ -1,0 +1,31 @@
+name: Main
+on:
+  push:
+#    branches:
+#      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    environment: test
+    concurrency: test-${{ github.ref }}
+    steps:
+      - name: Debug commit message
+        run: |-
+          echo ${{ github.event.head_commit.message }}
+      - name: Debug GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Debug deploy context
+        env:
+          DEPLOY_CONTEXT: ${{ toJSON(deployment) }}
+        run: echo "$DEPLOY_CONTEXT"
+      - name: Debug event context
+        env:
+          EVENT_CONTEXT: ${{ toJSON(event) }}
+        run: echo "$EVENT_CONTEXT"
+      - name: Deploy
+        run: |-
+          echo Deploy
+          
