@@ -17,10 +17,6 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: Debug deploy context
-        env:
-          DEPLOY_CONTEXT: ${{ toJSON(deployment) }}
-        run: echo "$DEPLOY_CONTEXT"
       - name: Debug event context
         env:
           EVENT_CONTEXT: ${{ toJSON(event) }}
