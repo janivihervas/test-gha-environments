@@ -1,8 +1,8 @@
 name: Main
 on:
   push:
-#    branches:
-#      - main
+    branches:
+      - main
 
 jobs:
   deploy-prd-skip-verification:
