@@ -5,9 +5,22 @@ on:
       - main
 
 jobs:
+  enable-auto-deploy:
+    name: Check PR labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shioyang/check-pr-labels-on-push-action@v1.0.10
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["auto-deploy"]'
+      - name: See result
+        run: echo "${{ steps.check_pr_labels.outputs.result }}"
+
   deploy-prd-skip-verification:
     name: Deploy prd skip verification
-    if: ${{ endsWith(github.event.head_commit.message, 'skip verification')}}
+    needs:
+      - enable-auto-deploy
+    if: ${{ jobs.enable-auto-deploy.outputs.result == 'true' }}
     runs-on: ubuntu-latest
     environment: prd-skip-verification
     concurrency: prd-${{ github.ref }}
@@ -15,9 +28,12 @@ jobs:
       - name: Deploy
         run: |-
           echo Deploy prd
+
   deploy-prd:
     name: Deploy prd
-    if: ${{ !endsWith(github.event.head_commit.message, 'skip verification')}}
+    needs:
+      - enable-auto-deploy
+    if: ${{ jobs.enable-auto-deploy.outputs.result == 'false' }}
     runs-on: ubuntu-latest
     environment: prd
     concurrency: prd-${{ github.ref }}
